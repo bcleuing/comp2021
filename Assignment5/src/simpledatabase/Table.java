@@ -11,10 +11,7 @@ public class Table extends Operator{
 	
 	private String attributeLine;
 	private String dataTypeLine;
-	private String tupleLine;
-	
-	private ArrayList<String> tupleLines = new ArrayList<String>();
-	private int count = 0;
+
 	
 	public Table(String from){
 		this.from = from;
@@ -22,17 +19,10 @@ public class Table extends Operator{
 		//Create buffer reader
 		try{
 			br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/datafile/"+from+".csv")));
-			attributeLine = br.readLine();
-			dataTypeLine = br.readLine();
-			tupleLine = br.readLine();
-			while (tupleLine != null) {
-				tupleLines.add(tupleLine);
-				tupleLine = br.readLine();
-			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-		} 
+		}
 		
 	}
 
@@ -44,8 +34,28 @@ public class Table extends Operator{
      */
 	@Override
 	public Tuple next(){
-		if (count == tupleLines.size()) return null;
-		tuple = new Tuple(attributeLine, dataTypeLine, tupleLines.get(count++));
+		String tupleLine = "";
+		if (!getAttribute) {
+			try{
+				attributeLine = br.readLine();
+				dataTypeLine = br.readLine();
+				getAttribute = true;
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		try{
+			tupleLine = br.readLine();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if (tupleLine == null) return null;
+		
+		tuple = new Tuple(attributeLine, dataTypeLine, tupleLine);
 		tuple.setAttributeName();
 		tuple.setAttributeType();
 		tuple.setAttributeValue();

@@ -1,11 +1,12 @@
 package simpledatabase;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 @SuppressWarnings("unchecked")
 
 public class Sort extends Operator{
 	
-	private ArrayList newAttributeList;
+	private ArrayList<Attribute> newAttributeList;
 	private String orderPredicate;
 	ArrayList<Tuple> tuplesResult;
 	
@@ -17,6 +18,7 @@ public class Sort extends Operator{
 		newAttributeList = new ArrayList<Attribute>();
 		tuplesResult = new ArrayList<Tuple>();
 		
+		ArrayList sortedList = new ArrayList();
 		Tuple fetchedTuple = child.next();
 		
 		int index = 0;
@@ -28,16 +30,19 @@ public class Sort extends Operator{
 		
 		while (fetchedTuple != null) {
 			tempTuples.add(fetchedTuple);
-			newAttributeList.add(fetchedTuple.getAttributeValue(index));
+			newAttributeList.add(fetchedTuple.getAttributeList().get(index));
 			fetchedTuple = child.next();
 		}
-
-		Collections.sort(newAttributeList);
+		
+		for (int a = 0; a < newAttributeList.size(); a++)
+			sortedList.add(newAttributeList.get(a).getAttributeValue());
+		
+		Collections.sort(sortedList);
 		
 		
-		for (int i = 0; i < newAttributeList.size(); i++) {
+		for (int i = 0; i < sortedList.size(); i++) {
 			for (int j = 0; j < tempTuples.size(); j++) {
-				if (newAttributeList.get(i).equals(tempTuples.get(j).getAttributeValue(index))) {
+				if (sortedList.get(i).equals(tempTuples.get(j).getAttributeValue(index))) {
 					tuplesResult.add(tempTuples.get(j));
 					tempTuples.remove(j);
 				}
