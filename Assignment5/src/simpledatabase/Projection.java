@@ -24,13 +24,13 @@ public class Projection extends Operator{
 		newAttributeList.clear();
 		Tuple fetchedTuple = child.next();
 		Tuple returnTuple = null;
+		ArrayList<Attribute> fetchedAttributeList;
 		
 		if (fetchedTuple != null) {
-			for (int i = 0; i < fetchedTuple.getAttributeList().size(); i++) {
-				if (fetchedTuple.getAttributeName(i).equals(attributePredicate)){
-					
-					newAttributeList.add(fetchedTuple.getAttributeList().get(i));
-					
+			fetchedAttributeList = fetchedTuple.getAttributeList();
+			for (int i = 0; i < fetchedAttributeList.size(); i++) {
+				if (fetchedTuple.getAttributeName(i).equals(attributePredicate)) {
+					newAttributeList.add(fetchedAttributeList.get(i));					
 					returnTuple = new Tuple(newAttributeList);
 				}
 			}
